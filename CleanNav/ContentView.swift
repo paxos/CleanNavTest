@@ -47,16 +47,18 @@ struct TestNavigationSplitView: View {
 
 @ToolbarContentBuilder
 func myToolbarItems() -> some ToolbarContent {
-    ToolbarItem {
+    ToolbarItem(placement: .navigation) {
         Button("Action") {}
     }
+
+    ToolbarItem(placement: .title) {
+        Button("Center") {}
+    }
+
     ToolbarItemGroup(placement: .automatic) {
         Button("Action 1") {}
         Button("Action 2") {}
         Button("Action 3") {}
-        Button("Action 4") {}
-        Button("Action 5") {}
-        Button("Action 6") {}
     }
 
 //    ToolbarItemGroup(placement: .primaryAction) {
@@ -93,7 +95,7 @@ struct ContentView: View {
                         .font(.largeTitle)
                 }
 
-                Tab("Notifications", systemImage: "envelope.front", value: 2) {
+                Tab("Master/Detail", systemImage: "envelope.front", value: 2) {
                     NavigationSplitView {
                         List(notificationItems, selection: $notificationSelection) { item in
                             Text(item.name)
@@ -118,28 +120,26 @@ struct ContentView: View {
 
                 Tab("Stack", systemImage: "square.stack", value: 3) {
                     NavigationStack {
-                        List(stackItems) { item in
-                            NavigationLink(item.name, value: item)
-                        }
-
-                        .navigationDestination(for: Item.self) { item in
-                            NavigationSplitView {
-                                List(notificationItems, selection: $notificationSelection) { item in
-                                    Text(item.name)
-                                }
-                                .navigationTitle("List Title")
-                                .navigationSubtitle("List Subtitle")
-                                .toolbar(content: {
-                                    myToolbarItems()
-                                })
-
-                            } detail: {
-                                Text(notificationSelection.first?.description ?? "No selection")
-                                    .navigationTitle("Detail Title")
-                                    .navigationSubtitle("Detail Subtitle")
+                        List {
+                            NavigationLink("One Level") {
+                                NavigationSplitView {
+                                    List(notificationItems, selection: $notificationSelection) { item in
+                                        Text(item.name)
+                                    }
+                                    .navigationTitle("List Title")
+                                    .navigationSubtitle("List Subtitle")
                                     .toolbar(content: {
                                         myToolbarItems()
                                     })
+
+                                } detail: {
+                                    Text(notificationSelection.first?.description ?? "No selection")
+                                        .navigationTitle("Detail Title")
+                                        .navigationSubtitle("Detail Subtitle")
+                                        .toolbar(content: {
+                                            myToolbarItems()
+                                        })
+                                }
                             }
                         }
                     }
