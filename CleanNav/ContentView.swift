@@ -84,6 +84,8 @@ struct ContentView: View {
 
     @State private var viewModel = ViewModel()
 
+    @State private var path: [String] = []
+
     // Stack
     let stackItems = [Item(name: "One"), Item(name: "two")]
 
@@ -142,6 +144,33 @@ struct ContentView: View {
                                 }
                             }
                         }
+                    }
+                }
+
+                Tab("Master/Detail > Stack", systemImage: "square.split.2x1", value: 4) {
+                    NavigationSplitView {
+                        List(notificationItems, selection: $notificationSelection) { item in
+                            Text(item.name)
+                        }
+                        .navigationTitle("List Title")
+                        .navigationSubtitle("List Subtitle")
+                        .toolbar {
+                            myToolbarItems()
+                        }
+                    } detail: {
+                        NavigationStack(path: $path) {
+                            Button("Push") {
+                                path.append("Pushed Content")
+                            }
+                            .buttonStyle(.glassProminent)
+
+                        }
+                        .navigationDestination(for: String.self) { item in
+                            Text(item)
+                        }
+                    }
+                    .toolbar {
+                        myToolbarItems()
                     }
                 }
             }
