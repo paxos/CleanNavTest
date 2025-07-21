@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6FDE54012E2EDC8C00119C0F /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 6FDE54002E2EDC8C00119C0F /* SwiftUIIntrospect */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		6FDE53F12E2ECC4C00119C0F /* CleanNav.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CleanNav.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FDE54012E2EDC8C00119C0F /* SwiftUIIntrospect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = CleanNav;
 			packageProductDependencies = (
+				6FDE54002E2EDC8C00119C0F /* SwiftUIIntrospect */,
 			);
 			productName = CleanNav;
 			productReference = 6FDE53F12E2ECC4C00119C0F /* CleanNav.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 6FDE53E82E2ECC4C00119C0F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6FDE53FF2E2EDC8C00119C0F /* XCRemoteSwiftPackageReference "swiftui-introspect" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6FDE53F22E2ECC4C00119C0F /* Products */;
 			projectDirPath = "";
@@ -328,6 +337,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6FDE53FF2E2EDC8C00119C0F /* XCRemoteSwiftPackageReference "swiftui-introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/swiftui-introspect.git";
+			requirement = {
+				kind = exactVersion;
+				version = "1.4.0-beta.3";
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6FDE54002E2EDC8C00119C0F /* SwiftUIIntrospect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FDE53FF2E2EDC8C00119C0F /* XCRemoteSwiftPackageReference "swiftui-introspect" */;
+			productName = SwiftUIIntrospect;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6FDE53E92E2ECC4C00119C0F /* Project object */;
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftUIIntrospect
 
 struct Item: Identifiable, Hashable {
     var id: String { name }
@@ -63,97 +64,105 @@ func myToolbarItems() -> some ToolbarContent {
 //    }
 }
 
+class ViewModel {
+    var tabBarController: UITabBarController?
+
+    func toggle() {
+        guard let tabBarController else { return }
+        print("Sidebar Hidden? \(tabBarController.isTabBarHidden)")
+        tabBarController.setTabBarHidden(!tabBarController.isTabBarHidden, animated: true)
+    }
+}
+
 struct ContentView: View {
     @AppStorage("tabSelection") private var selection: Int = 3
 
     let notificationItems = [Item(name: "Notification One"), Item(name: "Notification Two")]
     @State private var notificationSelection: Set<String> = []
 
+    @State private var viewModel = ViewModel()
+
     // Stack
     let stackItems = [Item(name: "One"), Item(name: "two")]
 
     var body: some View {
-        TabView(selection: $selection) {
-            Tab("Home", systemImage: "house", value: 1) {
-                Text("Welcome Home")
-                    .font(.largeTitle)
-            }
+        ZStack {
+            TabView(selection: $selection) {
+                Tab("Home", systemImage: "house", value: 1) {
+                    Text("Welcome Home")
+                        .font(.largeTitle)
+                }
 
-            Tab("Notifications", systemImage: "envelope.front", value: 2) {
-                NavigationSplitView {
-                    List(notificationItems, selection: $notificationSelection) { item in
-                        Text(item.name)
-                    }
-                    .navigationTitle("List Title")
-                    .navigationSubtitle("List Subtitle")
-                    .toolbar {
-                        myToolbarItems()
-                    }
-                } detail: {
-                    Text(notificationSelection.first?.description ?? "No selection")
-                        .navigationTitle("Detail Title")
-                        .navigationSubtitle("Detail Subtitle")
+                Tab("Notifications", systemImage: "envelope.front", value: 2) {
+                    NavigationSplitView {
+                        List(notificationItems, selection: $notificationSelection) { item in
+                            Text(item.name)
+                        }
+                        .navigationTitle("List Title")
+                        .navigationSubtitle("List Subtitle")
                         .toolbar {
                             myToolbarItems()
                         }
-                }
-                .toolbar {
-                    myToolbarItems()
-                }
-            }
-
-            Tab("Stack", systemImage: "square.stack", value: 3) {
-                NavigationStack {
-                    List(stackItems) { item in
-                        NavigationLink(item.name, value: item)
-                    }
-
-                    .navigationDestination(for: Item.self) { item in
-                        NavigationSplitView {
-                            List(notificationItems, selection: $notificationSelection) { item in
-                                Text(item.name)
-                            }
-                            .navigationTitle("List Title")
-                            .navigationSubtitle("List Subtitle")
-                            .toolbar(content: {
+                    } detail: {
+                        Text(notificationSelection.first?.description ?? "No selection")
+                            .navigationTitle("Detail Title")
+                            .navigationSubtitle("Detail Subtitle")
+                            .toolbar {
                                 myToolbarItems()
-                            })
+                            }
+                    }
+                    .toolbar {
+                        myToolbarItems()
+                    }
+                }
 
-                        } detail: {
-                            Text(notificationSelection.first?.description ?? "No selection")
-                                .navigationTitle("Detail Title")
-                                .navigationSubtitle("Detail Subtitle")
+                Tab("Stack", systemImage: "square.stack", value: 3) {
+                    NavigationStack {
+                        List(stackItems) { item in
+                            NavigationLink(item.name, value: item)
+                        }
+
+                        .navigationDestination(for: Item.self) { item in
+                            NavigationSplitView {
+                                List(notificationItems, selection: $notificationSelection) { item in
+                                    Text(item.name)
+                                }
+                                .navigationTitle("List Title")
+                                .navigationSubtitle("List Subtitle")
                                 .toolbar(content: {
                                     myToolbarItems()
                                 })
-                        }
 
+                            } detail: {
+                                Text(notificationSelection.first?.description ?? "No selection")
+                                    .navigationTitle("Detail Title")
+                                    .navigationSubtitle("Detail Subtitle")
+                                    .toolbar(content: {
+                                        myToolbarItems()
+                                    })
+                            }
+                        }
                     }
                 }
             }
-//            .customizationID("com.myApp.notifications")
 
-//            Tab("Explore", systemImage: "play") {
-//                Text("Explore")
-//            }
-//            .customizationID("com.myApp.explore")
-//
-//            Tab("Profile", systemImage: "play") {
-//                Text("Profile")
-//            }
-//            .customizationID("com.myApp.play")
-//
-//            Tab(role: .search) {
-//                // ...
-//            }
+            .toolbar(content: {
+                myToolbarItems()
+
+            })
+            .tabViewStyle(.sidebarAdaptable)
+            .introspect(.tabView, on: .iOS(.v26)) { tabBarController in
+                viewModel.tabBarController = tabBarController
+            }
+
+            VStack {
+                Spacer()
+
+                Button("Toggle Floating Bar") {
+                    viewModel.toggle()
+                }
+            }
         }
-        .toolbar(content: {
-            myToolbarItems()
-//            ToolbarItemGroup(placement: .bottomBar) {
-//                Button("Bottom Action") {}
-//            }
-        })
-        .tabViewStyle(.sidebarAdaptable)
     }
 }
 
