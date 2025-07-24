@@ -163,11 +163,15 @@ struct ContentView: View {
                                 path.append("Pushed Content")
                             }
                             .buttonStyle(.glassProminent)
+                            .toolbar {
+                                myToolbarItems()
+                            }
 
                         }
                         .navigationDestination(for: String.self) { item in
                             Text(item)
                         }
+
                     }
                     .toolbar {
                         myToolbarItems()
