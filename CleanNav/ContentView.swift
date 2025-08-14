@@ -47,23 +47,21 @@ struct TestNavigationSplitView: View {
 
 @ToolbarContentBuilder
 func myToolbarItems() -> some ToolbarContent {
-    ToolbarItem(placement: .navigation) {
-        Button("Action") {}
+
+//    ToolbarItemGroup {}
+    
+    ToolbarItemGroup(placement: .primaryAction) {
+        Button {} label: {
+            Label("a", systemImage: "circle.dashed")
+                .labelStyle(.iconOnly)
+        }
     }
 
-    ToolbarItem(placement: .title) {
-        Button("Center") {}
+    ToolbarItemGroup(placement: .secondaryAction) {
+        Button("Secondary 1") {}
+        Button("Secondary 2") {}
+        Button("Secondary 3") {}
     }
-
-    ToolbarItemGroup(placement: .automatic) {
-        Button("Action 1") {}
-        Button("Action 2") {}
-        Button("Action 3") {}
-    }
-
-//    ToolbarItemGroup(placement: .primaryAction) {
-//        Button("Bottom") {}
-//    }
 }
 
 class ViewModel {
@@ -81,10 +79,9 @@ struct ContentView: View {
 
     let notificationItems = [Item(name: "Notification One"), Item(name: "Notification Two")]
     @State private var notificationSelection: Set<String> = []
-
     @State private var viewModel = ViewModel()
-
     @State private var path: [String] = []
+    @State private var search = ""
 
     // Stack
     let stackItems = [Item(name: "One"), Item(name: "two")]
@@ -93,17 +90,21 @@ struct ContentView: View {
         ZStack {
             TabView(selection: $selection) {
                 Tab("Home", systemImage: "house", value: 1) {
-                    Text("Welcome Home")
+                    Text("Welcome Home!")
                         .font(.largeTitle)
+                        .navigationTitle("Title")
+                        .navigationSubtitle("Subtitle")
                 }
 
                 Tab("Master/Detail", systemImage: "envelope.front", value: 2) {
                     NavigationSplitView {
                         List(notificationItems, selection: $notificationSelection) { item in
                             Text(item.name)
+                                .tag(item.name)
                         }
                         .navigationTitle("List Title")
                         .navigationSubtitle("List Subtitle")
+                        .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             myToolbarItems()
                         }
@@ -130,6 +131,8 @@ struct ContentView: View {
                                     }
                                     .navigationTitle("List Title")
                                     .navigationSubtitle("List Subtitle")
+                                    .navigationBarTitleDisplayMode(.inline)
+                                    .searchable(text: $search, prompt: "Search")
                                     .toolbar(content: {
                                         myToolbarItems()
                                     })
@@ -138,12 +141,21 @@ struct ContentView: View {
                                     Text(notificationSelection.first?.description ?? "No selection")
                                         .navigationTitle("Detail Title")
                                         .navigationSubtitle("Detail Subtitle")
+                                        .navigationBarTitleDisplayMode(.inline)
+                                        .searchable(text: $search, prompt: "Search")
                                         .toolbar(content: {
                                             myToolbarItems()
                                         })
                                 }
                             }
                         }
+                        .searchable(text: $search, prompt: "Search")
+                        .toolbar(content: {
+                            myToolbarItems()
+                        })
+                        .navigationTitle("List Title")
+                        .navigationSubtitle("List Subtitle")
+                        .navigationBarTitleDisplayMode(.inline)
                     }
                 }
 
@@ -163,16 +175,16 @@ struct ContentView: View {
                                 path.append("Pushed Content")
                             }
                             .buttonStyle(.glassProminent)
+                            .searchable(text: $search, prompt: "Search")
                             .toolbar {
                                 myToolbarItems()
                             }
-
                         }
                         .navigationDestination(for: String.self) { item in
                             Text(item)
                         }
-
                     }
+                    .searchable(text: $search, prompt: "Search")
                     .toolbar {
                         myToolbarItems()
                     }
